@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xtts-streaming-server"
+version = "0.1.0"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+  "TTS @ git+https://github.com/coqui-ai/TTS@fa28f99f1508b5b5366539b2149963edcb80ba62",
+  "uvicorn[standard]==0.23.2",
+  "fastapi>=0.110,<0.116",
+  "click==8.3.1",
+  "typer==0.24.1",
+  "pydantic>=2.7,<3",
+  "pydantic-settings>=2.2,<3",
+  "python-dotenv>=1.0,<2",
+  "python-multipart==0.0.6",
+  "typing-extensions>=4.8.0",
+  "numpy==1.24.3",
+  "transformers==4.41.2",
+  "spacy==3.8.11",
+  "cutlet",
+  "mecab-python3==1.0.6",
+  "unidic-lite==1.0.8",
+  "unidic==1.1.0",
+  "torch==2.5.1+cu121",
+  "torchaudio==2.5.1+cu121",
+  "torchvision==0.20.1+cu121",
+]
+
+[project.optional-dependencies]
+client = [
+  "requests==2.31.0",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+torchaudio = { index = "pytorch-cu121" }
+torchvision = { index = "pytorch-cu121" }
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["server*"]

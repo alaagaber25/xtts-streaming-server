@@ -1,0 +1,17 @@
+.env
+.git
+.github
+.venv*/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tmp-wheel-check/
+models/
+speaker_profiles/

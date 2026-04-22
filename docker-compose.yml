@@ -1,0 +1,32 @@
+services:
+  xtts-streaming-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${XTTS_PORT:-8002}:80"
+    environment:
+      COQUI_TOS_AGREED: "${COQUI_TOS_AGREED:-1}"
+      NUM_THREADS: "${NUM_THREADS:-2}"
+      CUSTOM_MODEL_PATH: "${CUSTOM_MODEL_PATH:-/app/tts_models}"
+      SPEAKER_PROFILES_PATH: "${SPEAKER_PROFILES_PATH:-/app/speaker_profiles}"
+      DEFAULT_SPEAKER_PROFILE_ID: "${DEFAULT_SPEAKER_PROFILE_ID:-}"
+      BATCH_COLLECTION_WINDOW: "${BATCH_COLLECTION_WINDOW:-0.03}"
+      MAX_BATCH_SIZE: "${MAX_BATCH_SIZE:-4}"
+      QUEUE_POLL_INTERVAL: "${QUEUE_POLL_INTERVAL:-0.005}"
+      GPU_WORKER_COUNT: "${GPU_WORKER_COUNT:-1}"
+    volumes:
+      - xtts_model_cache:/root/.local/share/tts
+      - ./tts_models:/app/tts_models
+      - ./speaker_profiles:/app/speaker_profiles
+    gpus: all
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    restart: unless-stopped
+
+volumes:
+  xtts_model_cache:
