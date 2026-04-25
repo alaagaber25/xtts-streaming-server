@@ -7,8 +7,9 @@ from fastapi import APIRouter, Form, HTTPException, Request, UploadFile
 from fastapi.responses import StreamingResponse
 
 from ..audio import WAV_HEADER_BYTES, encode_audio_common
-from ..runtime import collect_session_bytes, iterate_session_chunks
+from ..runtime import collect_session_bytes
 from ..schemas import StreamingInputs, TTSInputs
+from ..stream_bridge import RequestStreamBridge
 from ..state import get_app_state
 
 
@@ -102,8 +103,13 @@ async def predict_streaming_endpoint(parsed_input: StreamingInputs, request: Req
         header_sent = False
         pcm_chunks_sent = 0
         pcm_bytes_sent = 0
+        bridge = RequestStreamBridge(
+            request_id=request_id,
+            session=session,
+            logger=state.logger,
+        )
         try:
-            async for chunk in iterate_session_chunks(session):
+            async for chunk in bridge.iter_chunks():
                 if payload["add_wav_header"] and not header_sent:
                     header_sent = True
                     yield WAV_HEADER_BYTES
@@ -128,6 +134,7 @@ async def predict_streaming_endpoint(parsed_input: StreamingInputs, request: Req
             state.logger.info("[%s] client disconnected", request_id)
             raise
         finally:
+            await bridge.close()
             state.scheduler.remove_session(request_id)
 
     return StreamingResponse(stream_audio(), media_type="audio/wav")
