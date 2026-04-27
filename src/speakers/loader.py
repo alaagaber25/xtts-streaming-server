@@ -2,7 +2,9 @@ import json
 from pathlib import Path
 from typing import Dict, List
 
-from core.config import REPO_ROOT, SPEAKER_PROFILES_PATH
+from core.config import REPO_ROOT, Settings
+
+settings = Settings()
 
 
 def _load_json_file(path: Path):
@@ -12,7 +14,7 @@ def _load_json_file(path: Path):
 
 def _get_speaker_profile_roots() -> List[Path]:
     candidate_paths = [
-        SPEAKER_PROFILES_PATH,
+        settings.resolved_speaker_profiles_path,
         REPO_ROOT / "speaker_profiles",
     ]
 
@@ -53,7 +55,10 @@ def _load_external_speaker_profiles() -> Dict[str, dict]:
             profiles_by_id[profile_id] = profile
 
             leaf_name = profile_dir.name
-            if leaf_name in leaf_name_to_id and leaf_name_to_id[leaf_name] != profile_id:
+            if (
+                leaf_name in leaf_name_to_id
+                and leaf_name_to_id[leaf_name] != profile_id
+            ):
                 duplicate_leaf_names.add(leaf_name)
             else:
                 leaf_name_to_id[leaf_name] = profile_id
@@ -80,10 +85,21 @@ def _get_model_speaker_profiles(model) -> Dict[str, dict]:
     if hasattr(model, "speaker_manager") and hasattr(model.speaker_manager, "speakers"):
         return {
             speaker: {
-                "speaker_embedding": model.speaker_manager.speakers[speaker]["speaker_embedding"].cpu().squeeze().half().tolist(),
-                "gpt_cond_latent": model.speaker_manager.speakers[speaker]["gpt_cond_latent"].cpu().squeeze().half().tolist(),
+                "speaker_embedding": model.speaker_manager.speakers[speaker][
+                    "speaker_embedding"
+                ]
+                .cpu()
+                .squeeze()
+                .half()
+                .tolist(),
+                "gpt_cond_latent": model.speaker_manager.speakers[speaker][
+                    "gpt_cond_latent"
+                ]
+                .cpu()
+                .squeeze()
+                .half()
+                .tolist(),
             }
             for speaker in model.speaker_manager.speakers.keys()
         }
     return {}
-

@@ -6,7 +6,7 @@ import json
 import os
 
 
-SERVER_URL = 'http://localhost:8000'
+SERVER_URL = f"http://localhost:{os.environ.get('XTTS_PORT', '8004')}"
 OUTPUT = "./demo_outputs"
 cloned_speakers = {}
 

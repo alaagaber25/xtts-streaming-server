@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -7,6 +8,9 @@ import time
 from typing import Iterator
 
 import requests
+
+
+DEFAULT_SERVER_URL = f"http://localhost:{os.environ.get('XTTS_PORT', '8004')}"
 
 
 def is_installed(lib_name: str) -> bool:
@@ -93,8 +97,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--server_url",
-        default="http://localhost:8000",
-        help="Server url http://localhost:8000 default, change to your server location ",
+        default=DEFAULT_SERVER_URL,
+        help=f"Server url {DEFAULT_SERVER_URL} default, change to your server location ",
     )
     parser.add_argument(
         "--stream_chunk_size",
