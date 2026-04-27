@@ -42,14 +42,16 @@ def tts(text, speaker, language, server_url, stream_chunk_size) -> Iterator[byte
     start = time.perf_counter()
     speaker["text"] = text
     speaker["language"] = language
-    speaker["stream_chunk_size"] = stream_chunk_size  # you can reduce it to get faster response, but degrade quality
+    speaker["stream_chunk_size"] = (
+        stream_chunk_size  # you can reduce it to get faster response, but degrade quality
+    )
     res = requests.post(
         f"{server_url}/tts_stream",
         json=speaker,
         stream=True,
     )
     end = time.perf_counter()
-    print(f"Time to make POST: {end-start}s", file=sys.stderr)
+    print(f"Time to make POST: {end - start}s", file=sys.stderr)
 
     if res.status_code != 200:
         print("Error:", res.text)
@@ -59,15 +61,15 @@ def tts(text, speaker, language, server_url, stream_chunk_size) -> Iterator[byte
     for chunk in res.iter_content(chunk_size=512):
         if first:
             end = time.perf_counter()
-            print(f"Time to first chunk: {end-start}s", file=sys.stderr)
+            print(f"Time to first chunk: {end - start}s", file=sys.stderr)
             first = False
         if chunk:
             yield chunk
 
-    print("⏱️ response.elapsed:", res.elapsed)
+    print("response.elapsed:", res.elapsed)
 
 
-def get_speaker(ref_audio,server_url):
+def get_speaker(ref_audio, server_url):
     files = {"wav_file": ("reference.wav", open(ref_audio, "rb"))}
     response = requests.post(f"{server_url}/clone_speaker", files=files)
     return response.json()
@@ -76,34 +78,28 @@ def get_speaker(ref_audio,server_url):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--text",
-        default="It took me quite a long time to develop a voice and now that I have it I am not going to be silent.",
-        help="text input for TTS"
+        "--text", default="السلام عليكم ورحمة الله وبركاته", help="text input for TTS"
     )
     parser.add_argument(
-        "--language",
-        default="en",
-        help="Language to use default is 'en'  (English)"
+        "--language", default="ar", help="Language to use default is 'en'  (English)"
     )
     parser.add_argument(
-        "--output_file",
-        default=None,
-        help="Save TTS output to given filename"
+        "--output_file", default=None, help="Save TTS output to given filename"
     )
     parser.add_argument(
         "--ref_file",
         default=None,
-        help="Reference audio file to use, when not given will use default"
+        help="Reference audio file to use, when not given will use default",
     )
     parser.add_argument(
         "--server_url",
         default="http://localhost:8000",
-        help="Server url http://localhost:8000 default, change to your server location "
+        help="Server url http://localhost:8000 default, change to your server location ",
     )
     parser.add_argument(
         "--stream_chunk_size",
         default="20",
-        help="Stream chunk size , 20 default, reducing will get faster latency but may degrade quality"
+        help="Stream chunk size , 20 default, reducing will get faster latency but may degrade quality",
     )
     args = parser.parse_args()
 
@@ -115,13 +111,7 @@ if __name__ == "__main__":
         speaker = get_speaker(args.ref_file, args.server_url)
 
     audio = stream_ffplay(
-        tts(
-            args.text,
-            speaker,
-            args.language,
-            args.server_url,
-            args.stream_chunk_size
-        ), 
+        tts(args.text, speaker, args.language, args.server_url, args.stream_chunk_size),
         args.output_file,
-        save=bool(args.output_file)
+        save=bool(args.output_file),
     )
