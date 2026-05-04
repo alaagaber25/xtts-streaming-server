@@ -11,3 +11,4 @@ dist/
 .ruff_cache/
 .tmp-wheel-check/
 tts_models
+tts_outputs

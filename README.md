@@ -122,6 +122,8 @@ NUM_THREADS=2
 USE_DEEPSPEED=0
 CUSTOM_MODEL_PATH=tts_models/sa
 SPEAKER_PROFILES_PATH=speaker_profiles
+SAVE_TTS_OUTPUTS=0
+TTS_OUTPUTS_PATH=tts_outputs
 XTTS_PORT=8004
 ```
 
@@ -139,6 +141,10 @@ Main settings:
   exact model directory to load
 - `SPEAKER_PROFILES_PATH`  
   root directory containing external speaker profiles
+- `SAVE_TTS_OUTPUTS`  
+  set to `1` to save `/tts_stream` output for server-side listening/debugging
+- `TTS_OUTPUTS_PATH`  
+  directory where saved request audio is written when `SAVE_TTS_OUTPUTS=1`
 
 ## Important Docker Note
 
@@ -178,8 +184,9 @@ This is the recommended pattern when your repo contains multiple checkpoint fold
 ```powershell
 docker run --gpus=all `
   --env-file .env `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts-original-streaming\tts_models:/app/tts_models `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts-original-streaming\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_models:/app/tts_models `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs:/app/tts_outputs `
   -p 8004:8004 `
   xtts-stream
 ```
@@ -187,7 +194,24 @@ docker run --gpus=all `
 With this setup, `CUSTOM_MODEL_PATH` in `.env` chooses the exact checkpoint directory, for example:
 
 ```env
-CUSTOM_MODEL_PATH=tts_models/sa
+  CUSTOM_MODEL_PATH=tts_models/sa
+```
+
+If `SAVE_TTS_OUTPUTS=1`, each streaming request is saved under `TTS_OUTPUTS_PATH`.
+For Docker, keep `TTS_OUTPUTS_PATH=tts_outputs` and mount your host folder to
+`/app/tts_outputs` as shown above. The files then appear on Windows under
+`F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs`, not only inside the
+container.
+
+Each saved request folder contains:
+
+```text
+tts_outputs/
+  20260503_153012_9f4a2b1c/
+    metadata.json
+    final.wav
+    chunk_0000.wav
+    chunk_0001.wav
 ```
 
 ### Run on CPU
@@ -198,8 +222,9 @@ docker build -t xtts-stream-cpu -f Dockerfile.cpu .
 docker run `
   --env-file .env `
   -e USE_CPU=1 `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts-original-streaming\tts_models:/app/tts_models `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts-original-streaming\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_models:/app/tts_models `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs:/app/tts_outputs `
   -p 8004:8004 `
   xtts-stream-cpu
 ```

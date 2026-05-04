@@ -30,6 +30,8 @@ class _Settings(BaseSettings):
     use_deepspeed: bool = False
     custom_model_path: str | None = None
     speaker_profiles_path: str = "speaker_profiles"
+    save_tts_outputs: bool = False
+    tts_outputs_path: str = "tts_outputs"
     xtts_port: int = 8004
 
     @property
@@ -41,6 +43,10 @@ class _Settings(BaseSettings):
     @property
     def resolved_speaker_profiles_path(self) -> Path:
         return _resolve_repo_path(self.speaker_profiles_path)
+
+    @property
+    def resolved_tts_outputs_path(self) -> Path:
+        return _resolve_repo_path(self.tts_outputs_path)
 
     @property
     def device(self) -> torch.device:
@@ -59,6 +65,8 @@ NUM_THREADS = settings.num_threads
 USE_DEEPSPEED = settings.use_deepspeed
 CUSTOM_MODEL_PATH = settings.resolved_custom_model_path
 SPEAKER_PROFILES_PATH = settings.resolved_speaker_profiles_path
+SAVE_TTS_OUTPUTS = settings.save_tts_outputs
+TTS_OUTPUTS_PATH = settings.resolved_tts_outputs_path
 XTTS_PORT = settings.xtts_port
 DEVICE = settings.device
 
