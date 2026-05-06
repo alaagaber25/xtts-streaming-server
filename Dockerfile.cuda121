@@ -1,7 +1,9 @@
 FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel
 ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && \
+RUN sed -i 's|http://archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|https://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list && \
+    printf 'Acquire::Retries "5";\nAcquire::http::Timeout "60";\nAcquire::https::Timeout "60";\n' > /etc/apt/apt.conf.d/99-retries && \
+    apt-get update && \
     apt-get install --no-install-recommends -y sox libsox-fmt-all curl wget gcc git git-lfs build-essential libaio-dev libsndfile1 ssh ffmpeg && \
     apt-get clean && apt-get -y autoremove
 

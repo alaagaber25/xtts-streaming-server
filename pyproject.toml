@@ -3,7 +3,7 @@ name = "xtts-original-streaming"
 version = "0.1.0"
 description = "FastAPI XTTS streaming inference server with custom checkpoint and speaker profile support."
 readme = "README.md"
-requires-python = ">=3.10,<3.12"
+requires-python = ">=3.11,<3.12"
 dependencies = [
     "TTS @ git+https://github.com/coqui-ai/TTS@fa28f99f1508b5b5366539b2149963edcb80ba62",
     "transformers==4.41.2",
@@ -24,6 +24,7 @@ dependencies = [
     "mecab-python3==1.0.6",
     "unidic-lite==1.0.8",
     "unidic==1.1.0",
+    "soundfile>=0.13,<1",
 ]
 
 [project.optional-dependencies]

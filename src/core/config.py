@@ -33,6 +33,13 @@ class _Settings(BaseSettings):
     save_tts_outputs: bool = False
     tts_outputs_path: str = "tts_outputs"
     xtts_port: int = 8004
+    tts_temperature: float = 0.35
+    tts_top_k: int = 5
+    tts_top_p: float = 0.6
+    tts_length_penalty: float = 1.5
+    tts_repetition_penalty: float = 10.0
+    tts_do_sample: bool = True
+    tts_seed: int | None = 6
 
     @property
     def resolved_custom_model_path(self) -> Path | None:

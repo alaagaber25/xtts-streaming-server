@@ -10,6 +10,7 @@ __pycache__/
 build/
 dist/
 demo_outputs/
+matrix_runs/
 prompts/
 speaker_profiles/
 test/

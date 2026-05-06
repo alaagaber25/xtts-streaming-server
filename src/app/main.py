@@ -1,3 +1,5 @@
+from threading import Lock
+
 import torch
 from fastapi import FastAPI
 
@@ -26,6 +28,7 @@ app = FastAPI(
 )
 app.state.xtts_config = xtts_config
 app.state.model = model
+app.state.model_lock = Lock()
 app.state.external_speaker_profiles = external_speaker_profiles
 app.include_router(tts_router)
 app.include_router(speakers_router)
