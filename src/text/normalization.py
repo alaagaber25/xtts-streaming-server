@@ -57,9 +57,9 @@ def _ensure_terminal_punctuation(text: str) -> str:
         return text
     if text[-1] == ".":
         # Replace trailing period with ! — safer for XTTS stop-token prediction
-        text = text[:-1] + "_"
+        text = text[:-1] + "!"
     elif text[-1] not in {"!", "?"}:
-        text += "_"
+        text += "!"
     return text
 
 
@@ -125,5 +125,6 @@ def normalize_tts_text(text: str) -> str:
 
 
 if __name__ == "__main__":
-    test_sentence = "أقترح أن نرجع إلى الخريطة الرئيسية (Master Plan) عشان نشوف موقعنا ضمن المنطقة كلها ونشوف كل الخدمات والمرافق اللي تحيط بنا. هل تفضل نبدأ باستعراض المخطط العام للمشروع؟"
+    test_sentence = "أهلاً بيك أ. فهد، مستشارك العقاري. من فضلك، ما هو اسم حضرتك؟ وهل ممكن أعرف رقم التواصل الخاص بحضرتك عشان نسهل علينا التنسيق بعد كده؟ وبعدها أقدر أسألك شوية أسئلة. إيه اللي حضرتك بتبحث عنه؟ هل بتبحث عن شيء معين؟ أو ودك أشوف لك العروض والمخطط العام للمشروع؟"
+    print("Original :", test_sentence)
     print("Normalized:", normalize_tts_text(test_sentence))
