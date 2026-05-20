@@ -201,9 +201,9 @@ This is the recommended pattern when your repo contains multiple checkpoint fold
 ```powershell
 docker run --gpus=all `
   --env-file .env `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_models:/app/tts_models `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs:/app/tts_outputs `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\tts_models:/app/tts_models `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\tts_outputs:/app/tts_outputs `
   -p 8004:8004 `
   xtts-stream
 ```
@@ -217,7 +217,7 @@ With this setup, `CUSTOM_MODEL_PATH` in `.env` chooses the exact checkpoint dire
 If `SAVE_TTS_OUTPUTS=1`, each streaming request is saved under `TTS_OUTPUTS_PATH`.
 For Docker, keep `TTS_OUTPUTS_PATH=tts_outputs` and mount your host folder to
 `/app/tts_outputs` as shown above. The files then appear on Windows under
-`F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs`, not only inside the
+`F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\tts_outputs`, not only inside the
 container.
 
 Each saved request folder contains:
@@ -239,9 +239,9 @@ docker build -t xtts-stream-cpu -f Dockerfile.cpu .
 docker run `
   --env-file .env `
   -e USE_CPU=1 `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_models:/app/tts_models `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
-  -v F:\VOOM-AI\GitHubs\xtts-server\xtts\tts_outputs:/app/tts_outputs `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\tts_models:/app/tts_models `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\speaker_profiles:/app/speaker_profiles `
+  -v F:\VOOM-AI\GitHubs\TTS\xtts-server\xtts\tts_outputs:/app/tts_outputs `
   -p 8004:8004 `
   xtts-stream-cpu
 ```

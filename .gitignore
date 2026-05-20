@@ -13,3 +13,4 @@ dist/
 tts_models
 tts_outputs
 matrix_runs
+eval\audio_samples
